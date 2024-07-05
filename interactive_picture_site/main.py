@@ -4,7 +4,6 @@ import os
 import typing
 
 import fastapi
-import websockets
 from fastapi.staticfiles import StaticFiles
 
 IMAGE_FOLDER = "static/images"
@@ -23,7 +22,7 @@ REFRESH_RATE = 5.0
 @contextlib.asynccontextmanager
 async def lifespan(app: fastapi.FastAPI) -> typing.AsyncIterator[None]:
     app.state.clients = []
-
+    app.state.current_points = []
     app.state.background_task = asyncio.create_task(update_image())
     yield
 
@@ -31,10 +30,11 @@ async def lifespan(app: fastapi.FastAPI) -> typing.AsyncIterator[None]:
 async def update_image():
     current_index = 0
     while True:
-        await asyncio.sleep(REFRESH_RATE)
         current_index = (current_index + 1) % len(IMAGES)
+        app.state.current_image = IMAGES[current_index]
         for client in app.state.clients:
-            await client.send_text(IMAGES[current_index])
+            await client.send_text(app.state.current_image)
+        await asyncio.sleep(REFRESH_RATE)
 
 
 # This creates the FastAPI app and defines the endpoints
@@ -57,14 +57,15 @@ async def get() -> fastapi.responses.HTMLResponse:
 async def websocket_endpoint(client_websocket: fastapi.WebSocket):
     await client_websocket.accept()
     app.state.clients.append(client_websocket)
+    await client_websocket.send_text(app.state.current_image)
+    for point in app.state.current_points:
+        await client_websocket.send_text(point)
     try:
         while True:
             data = await client_websocket.receive_text()
+            app.state.current_points.append(data)
             for client in app.state.clients:
                 if client != client_websocket:
                     await client.send_text(data)
-    except (
-        websockets.exceptions.ConnectionClosedError,
-        websockets.exceptions.ConnectionClosedOK,
-    ):
+    except Exception:
         app.state.clients.remove(client_websocket)
