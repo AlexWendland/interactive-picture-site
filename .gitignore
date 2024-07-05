@@ -155,4 +155,4 @@ dmypy.json
 cython_debug/
 
 # Pictures to be displayed
-interactive_picture_site/static/images/*
+static/images/*
