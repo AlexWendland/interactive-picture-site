@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "interactive-picture-site"
+version = "0.1.0"
+description = ""
+authors = ["Alex Wendland <a.p.wendland@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 120
+select=[
+  "A",
+  "B006",
+  "C",
+  "E",
+  "F",
+  "I",
+  "UP",
+  "YTT",
+  "W",
+  "N",
+  "ISC",
+  "PLC",
+  "RET",
+  "RUF100",
+  "PGH004"
+]
+
+[tool.ruff.format]
+indent-style = "space"
+
+[tool.mypy]
+ignore_missing_impors = true
+python_version = "3.11"
+disable_error_code = []
