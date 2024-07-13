@@ -12,3 +12,13 @@ A simple html site to have a interactive slide show and realtime drawing functio
 ## Run the server
 
 To run the server use `poetry run start` the server then can be accessed on `http://127.0.0.1:5000/`.
+
+## To do list
+
+- [ ] Buffer drawn points and retransmit upon subscription.
+- [ ] Implement clear button.
+- [ ] Implement pause/play button.
+- [ ] Implement speed up/ spow down button.
+- [ ] Take photos from google drive/self hosted photos site.
+- [ ] (BUG) Drawing seems to disapear occationally.
+- [ ] (BUG) Random picture rezising whilst streaming.
